@@ -4,11 +4,18 @@ pipeline {
         maven 'M3_8_2'
     }
     stages {
-        stage('Build') {
+        stage('Build and Analize') {
             steps {
                 dir('microservicio-service/'){
-                    echo 'Execute Maven'
-                    sh 'mvn clean package'
+                    echo 'Execute Maven and Analizing with SonarServer'
+                    withSonarQubeEnv('SonarServer') {
+                        sh "mvn clean package sonar:sonar \
+                            -Dsonar.projectKey=21_MyCompany_Microservice \
+                            -Dsonar.projectName=21_MyCompany_Microservice \
+                            -Dsonar.sources=src/main \
+                            -Dsonar.coverage.exclusions=**/*TO.java,**/*DO.java,**/curso/web/**/*,**/curso/persistence/**/*,**/curso/commons/**/*,**/curso/model/**/* \
+                            -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml"
+                    }
                 }
             }
         }
