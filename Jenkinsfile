@@ -30,7 +30,7 @@ pipeline {
         stage('Frontend') {
             steps {
                 echo 'Building Frontend'
-                dir('frontend/'){
+                dir('Angular7BaseCli/'){
                     sh 'npm install'
                     sh 'npm run build'
                     sh 'docker stop frontend-one || true'
