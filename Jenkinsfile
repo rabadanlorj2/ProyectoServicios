@@ -47,8 +47,8 @@ pipeline {
             steps {
                    withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'dockernexus_id  ', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
                    sh 'docker login ${LOCAL_SERVER}:8083 -u $USERNAME -p $PASSWORD'
-                   sh 'docker tag microservicio-service:latest ${LOCAL_SERVER}:8081/repository/docker-private/microservicio_nexus:dev'
-                   sh 'docker push ${LOCAL_SERVER}:8081/repository/docker-private/microservicio_nexus:dev'
+                   sh 'docker tag microservicio-service:latest ${LOCAL_SERVER}:8083/repository/docker-private/microservicio_nexus:dev'
+                   sh 'docker push ${LOCAL_SERVER}:8083/repository/docker-private/microservicio_nexus:dev'
                 }
             }
         }
