@@ -55,7 +55,7 @@ pipeline {
         stage('Container Run') {
             steps {
                 sh 'docker stop microservicio-one || true '
-                sh 'docker run -d --rm --name microservicio-one  -p 8090:8090 ${LOCAL_SERVER}:8081/repository/docker-private/microservicio_nexus:dev'
+                sh 'docker run -d --rm --name microservicio-one  -p 8090:8090 ${LOCAL_SERVER}:8083/repository/docker-private/microservicio_nexus:dev'
             }
         }
     }
