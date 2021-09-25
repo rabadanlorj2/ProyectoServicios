@@ -27,6 +27,20 @@ pipeline {
                 }
             }
         }
+        stage('Frontend') {
+            steps {
+                echo 'Building Frontend'
+                dir('frontend/'){
+                    sh 'npm install'
+                    sh 'npm run build'
+                    sh 'docker stop frontend-one || true'
+                    sh "docker build -t frontend-web ."
+                    sh 'docker run -d --rm --name frontend-one -p 8010:80 frontend-web'
+                }
+            }
+        }
+
+
         stage('Quality Gate'){
             steps {
                 timeout(time: 2, unit: 'MINUTES') {
