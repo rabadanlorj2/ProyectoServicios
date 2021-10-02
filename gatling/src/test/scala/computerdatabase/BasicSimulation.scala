@@ -16,7 +16,7 @@ class BasicSimulation extends Simulation {
   val scn = scenario("Scenario Name") // A scenario is a chain of requests and pauses
     .exec(http("/users"))
     .pause(7)
-    exec(http("Validar ping"))
+    .exec(http("Validar ping"))
       .get("/ping")
     .pause(7) // Note that Gatling has recorded real time pauses
     
