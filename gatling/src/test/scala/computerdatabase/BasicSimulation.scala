@@ -17,7 +17,7 @@ class BasicSimulation extends Simulation {
     .exec(http("/users"))
     .pause(7)
     exec(http("Validar ping"))
-      .get("/ping"))
+      .get("/ping")
     .pause(7) // Note that Gatling has recorded real time pauses
     
 
