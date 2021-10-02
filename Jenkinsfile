@@ -8,7 +8,7 @@ pipeline {
         maven 'M3_8_2'
         nodejs 'NodeJs12'
     }
-    stages {
+    /*stages {
         stage('Build and Analize') {
             steps {
                 dir('microservicio-service/'){
@@ -26,7 +26,7 @@ pipeline {
                     }
                 }
             }
-        }
+        }*/
         stage('Frontend') {
             steps {
                 echo 'Building Frontend'
