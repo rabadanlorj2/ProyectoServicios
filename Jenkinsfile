@@ -1,7 +1,7 @@
 pipeline {
     agent any
        environment {
-        LOCAL_SERVER = '192.168.0.25'
+        LOCAL_SERVER = '192.168.0.16'
         MODE='dev'
     }
     tools {
@@ -76,6 +76,24 @@ pipeline {
                 }
             }
         }
+stage('Testing') {
+            steps {
+                dir('cypress/') {
+                    sh 'docker run --rm --name Cypress -v /Users/jaime/Documents/Curso/devops/Jenkins/jenkins_home/workspace/Pruebas/cypress:/e2e -w /e2e -e Cypress cypress/included:3.4.0'
+                }
+            }
+        }
+        stage('tar videos') 
+        {
+            steps 
+            {
+                dir('cypress/cypress/videos/') {
+                    sh 'tar -cvf videos.tar .'
+                    archiveArtifacts artifacts: 'videos.tar',
+                    allowEmptyArchive: true
+                }
+            }
+        }
         stage('Container Run') {
             steps {
                 sh 'docker stop microservicio-one || true '
@@ -84,3 +102,4 @@ pipeline {
         }
     }
 }
+
