@@ -111,6 +111,19 @@ pipeline {
             echo 'I failed :('
         }
     }*/
+    Stage de Estress:
+stage('Estress') {
+            steps {
+                dir('Gatling/'){
+                    sh 'mvn gatling:test'
+                }
+            }
+            post {
+                always {
+                    gatlingArchive()
+                }
+            }
+        }
    
 
 }
