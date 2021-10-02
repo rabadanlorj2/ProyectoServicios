@@ -29,7 +29,7 @@ pipeline {
                 }
             }
         } */
-        stages {
+        
         stage('Build and Analize') {
             steps {
                 dir('microservicio-service/'){
