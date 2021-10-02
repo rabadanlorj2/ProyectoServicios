@@ -41,13 +41,13 @@ pipeline {
         }
 
 
-        stage('Quality Gate'){
+        /*stage('Quality Gate'){
             steps {
                 timeout(time: 2, unit: 'MINUTES') {
                     waitForQualityGate abortPipeline: false
                 }
             }
-        }
+        }*/
         stage('Database') {
             steps {
                 dir('liquibase/'){
@@ -67,7 +67,7 @@ pipeline {
                 }
             }
         }
-        stage('Container Push Nexus') {
+        /*stage('Container Push Nexus') {
             steps {
                    withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'dockernexus_id  ', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
                    sh 'docker login ${LOCAL_SERVER}:8083 -u $USERNAME -p $PASSWORD'
@@ -75,15 +75,15 @@ pipeline {
                    sh 'docker push ${LOCAL_SERVER}:8083/repository/docker-private/microservicio_nexus:dev'
                 }
             }
-        }
-stage('Testing') {
+        }*/
+        /*stage('Testing') {
             steps {
                 dir('cypress/') {
                     sh 'docker run --rm --name Cypress -v /Users/jaime/Documents/Curso/devops/Jenkins/jenkins_home/workspace/Pruebas/cypress:/e2e -w /e2e -e Cypress cypress/included:3.4.0'
                 }
             }
-        }
-        stage('tar videos') 
+        }*/
+        /*stage('tar videos') 
         {
             steps 
             {
@@ -93,7 +93,7 @@ stage('Testing') {
                     allowEmptyArchive: true
                 }
             }
-        }
+        }*/
         stage('Container Run') {
             steps {
                 sh 'docker stop microservicio-one || true '
@@ -101,5 +101,16 @@ stage('Testing') {
             }
         }
     }
+    /*post {
+        always {
+            deleteDir()
+        }
+        success {
+            echo 'I succeeeded!'
+        }
+        failure {
+            echo 'I failed :('
+        }
+    }*/
 }
 
