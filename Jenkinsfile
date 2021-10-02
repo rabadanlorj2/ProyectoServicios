@@ -1,15 +1,13 @@
 pipeline {
     agent any
-       environment {
+    environment {
         LOCAL_SERVER = '192.168.0.16'
-        MODE='dev'
     }
     tools {
         maven 'M3_8_2'
         nodejs 'NodeJs12'
     }
-   
-        
+    stages {
         stage('Build and Analize') {
             steps {
                 dir('microservicio-service/'){
@@ -28,20 +26,6 @@ pipeline {
                 }
             }
         }
-        stage('Frontend') {
-            steps {
-                echo 'Building Frontend'
-                dir('Angular7BaseCli/'){
-                    sh 'npm install'
-                    sh 'npm run build'
-                    sh 'docker stop frontend-one || true'
-                    sh "docker build -t frontend-web ."
-                    sh 'docker run -d --rm --name frontend-one -p 8010:80 frontend-web'
-                }
-            }
-        }
-
-
         /*stage('Quality Gate'){
             steps {
                 timeout(time: 2, unit: 'MINUTES') {
@@ -49,19 +33,31 @@ pipeline {
                 }
             }
         }*/
+        /*stage('Frontend') {
+            steps {
+                echo 'Building Frontend'
+                dir('frontend/'){
+                    sh 'npm install'
+                    sh 'npm run build'
+                    sh 'docker stop frontend-one || true'
+                    sh "docker build -t frontend-web ."
+                    sh 'docker run -d --rm --name frontend-one -p 8010:80 frontend-web'
+                }
+            }
+        }*/
         stage('Database') {
             steps {
                 dir('liquibase/'){
-                sh '/opt/liquibase/liquibase --version'
-                sh '/opt/liquibase/liquibase --changeLogFile="changesets/db.changelog-master.xml" update'
-                echo 'Applying Db changes'
+                    sh '/opt/liquibase/liquibase --version'
+                    sh '/opt/liquibase/liquibase --changeLogFile="changesets/db.changelog-master.xml" update'
+                    echo 'Applying Db changes'
+                }
+            }
         }
-    }
-}
         stage('Container Build') {
             steps {
                 dir('microservicio-service/'){
-                    withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'dockerhub_id  ', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
+                    withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'dockerhub_id', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
                         sh 'docker login -u $USERNAME -p $PASSWORD'
                         sh 'docker build -t microservicio-service .'
                     }
@@ -70,20 +66,28 @@ pipeline {
         }
         /*stage('Container Push Nexus') {
             steps {
-                   withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'dockernexus_id  ', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
-                   sh 'docker login ${LOCAL_SERVER}:8083 -u $USERNAME -p $PASSWORD'
-                   sh 'docker tag microservicio-service:latest ${LOCAL_SERVER}:8083/repository/docker-private/microservicio_nexus:dev'
-                   sh 'docker push ${LOCAL_SERVER}:8083/repository/docker-private/microservicio_nexus:dev'
+                withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'dockernexus_id', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
+                    sh 'docker login ${LOCAL_SERVER}:8083 -u $USERNAME -p $PASSWORD'
+                    sh 'docker tag microservicio-service:latest ${LOCAL_SERVER}:8083/repository/docker-private/microservicio_nexus:dev'
+                    sh 'docker push ${LOCAL_SERVER}:8083/repository/docker-private/microservicio_nexus:dev'
                 }
             }
         }*/
+        stage('Container Run') {
+            steps {
+                sh 'docker stop microservicio-one || true'
+                sh 'docker run -d --rm --name microservicio-one -e SPRING_PROFILES_ACTIVE=qa -p 8090:8090 microservicio-service'
+            }
+        }
         /*stage('Testing') {
             steps {
                 dir('cypress/') {
-                    sh 'docker run --rm --name Cypress -v /Users/jaime/Documents/Curso/devops/Jenkins/jenkins_home/workspace/Pruebas/cypress:/e2e -w /e2e -e Cypress cypress/included:3.4.0'
+                    sh 'docker build -t cypressfront .'
+                    sh 'docker run cypressfront'
+                    //sh 'docker run --rm --name Cypress -v /Users/javierrodriguez/Documents/Repositorios/EcosistemaJenkins/jenkins_home/workspace/Microservicio/Cypress:/e2e -w /e2e -e Cypress cypress/included:3.4.0'
                 }
             }
-        }*/
+        }*
         /*stage('tar videos') 
         {
             steps 
@@ -95,12 +99,6 @@ pipeline {
                 }
             }
         }*/
-        stage('Container Run') {
-            steps {
-                sh 'docker stop microservicio-one || true '
-                sh 'docker run -d --rm --name microservicio-one -e SPRING_PROFILES_ACTIVE=qa -p 8090:8090 ${LOCAL_SERVER}:8083/repository/docker-private/microservicio_nexus:dev'
-            }
-        }
     }
     /*post {
         always {
@@ -113,5 +111,4 @@ pipeline {
             echo 'I failed :('
         }
     }*/
-
-
+}
