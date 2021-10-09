@@ -3,14 +3,14 @@ spring:
   application:
     name: zuul-server     # This is the name for the remote configuration file
 server:
-  port: 8080 #the default port used for zuul service
+  port: 8085 #the default port used for zuul service
 
 eureka:
   client:
     registerWithEureka: false
     fetchRegistry: true
     serviceUrl:
-      defaultZone: http://localhost:8761/eureka
+      defaultZone: http://192.168.0.6:8761/eureka
 
 zuul:
   ignoredServices: '*'
@@ -19,6 +19,6 @@ zuul:
     socket-timeout-millis: 20000
   routes:
     microservicio-service: # Service to create as sample
-      path: /microservicio/** #path that will be intercepted
+      path: /apimicros/** #path that will be intercepted
       serviceId: microservicio-service
-      stripPrefix: false  #if zuul should replace the "/sample/" segment
+      stripPrefix: true  #if zuul should replace the "/sample/" segment

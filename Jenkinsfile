@@ -1,7 +1,7 @@
 pipeline {
     agent any
     environment {
-        LOCAL_SERVER = '192.168.0.16'
+        LOCAL_SERVER = '192.168.0.6'
     }
     tools {
         maven 'M3_8_2'
@@ -98,7 +98,7 @@ pipeline {
                     allowEmptyArchive: true
                 }
             }
-        }*/
+        }*//*
         stage('Estress') {
             steps {
                 dir('Gatling/'){
@@ -111,7 +111,7 @@ pipeline {
                 }
             }
         }
-    }
+    }*/
     /*post {
         always {
             deleteDir()
