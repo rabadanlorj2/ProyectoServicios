@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:postgresql://192.168.0.16:5432/unbound
+    url: jdbc:postgresql://192.168.0.6:5432/unbound
     username: postgres
     password: project123
     driver-class-name: org.postgresql.Driver
