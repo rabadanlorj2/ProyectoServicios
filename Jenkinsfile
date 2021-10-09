@@ -186,6 +186,7 @@ pipeline {
                 sh 'docker stop microservicio-two || true'
                 sh 'docker run -d --rm --name microservicio-two -e SPRING_PROFILES_ACTIVE=qa  microservicio-service'
             }
+        }
         stage('Container Run two') {
             steps {
                 sh 'docker stop microservicio-one || true'
@@ -194,7 +195,7 @@ pipeline {
                 sh 'docker stop microservicio-two || true'
                 sh 'docker run -d --rm --name microservicio-two-two -e SPRING_PROFILES_ACTIVE=qa  microservicio-service-two'
             }
-            
+        }
         
         /*stage('Testing') {
             steps {
