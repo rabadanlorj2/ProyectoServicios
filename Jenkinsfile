@@ -46,8 +46,8 @@ pipeline {
                     withSonarQubeEnv('SonarServer') {
                         /* sh "mvn clean package sonar:sonar \*/
                         sh "mvn clean package \
-                            -Dsonar.projectKey=21_MyCompany_Microservice \
-                            -Dsonar.projectName=21_MyCompany_Microservice \
+                            -Dsonar.projectKey=21_MyCompany_Microservice_two \
+                            -Dsonar.projectName=21_MyCompany_Microservice_two \
                             -Dsonar.sources=src/main \
                             -Dsonar.coverage.exclusions=**/*TO.java,**/*DO.java,**/curso/web/**/*,**/curso/persistence/**/*,**/curso/commons/**/*,**/curso/model/**/* \
                             -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml \
@@ -185,14 +185,17 @@ pipeline {
 
                 sh 'docker stop microservicio-two || true'
                 sh 'docker run -d --rm --name microservicio-two -e SPRING_PROFILES_ACTIVE=qa  microservicio-service'
-
+            }
+        stage('Container Run two') {
+            steps {
                 sh 'docker stop microservicio-one || true'
-                sh 'docker run -d --rm --name microservicio-two-one -e SPRING_PROFILES_ACTIVE=qa  microservicio-service-two'
+                sh 'docker run -d --rm --name microservicio-two -e SPRING_PROFILES_ACTIVE=qa  microservicio-service-two'
 
                 sh 'docker stop microservicio-two || true'
                 sh 'docker run -d --rm --name microservicio-two-two -e SPRING_PROFILES_ACTIVE=qa  microservicio-service-two'
             }
-        }
+            
+        
         /*stage('Testing') {
             steps {
                 dir('cypress/') {
