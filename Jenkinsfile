@@ -51,13 +51,14 @@ pipeline {
                 }
             }
         }*/
-        when{
+        
+        stage('Database') {
+            when{
                 anyOf{
                     changeset "*liquibase/**"
                     expression {currentBuild.previousBuild.result != "SUCCESS"}
                 }
             }
-        stage('Database') {
             steps {
                 dir('liquibase/'){
                     sh '/opt/liquibase/liquibase --version'
@@ -66,13 +67,14 @@ pipeline {
                 }
             }
         }
-        when{
+        
+        stage('Container Build') {
+            when{
                 anyOf{
                     changeset "*microservicio-service/**"
                     expression {currentBuild.previousBuild.result != "SUCCESS"}
                 }
             }
-        stage('Container Build') {
             steps {
                 dir('microservicio-service/'){
                     withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'dockerhub_id', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
@@ -91,13 +93,14 @@ pipeline {
                 }
             }
         }*/
-        when{
+        
+        stage('Zuul') {
+            when{
                 anyOf{
                     changeset "*ZuulBase/**"
                     expression {currentBuild.previousBuild.result != "SUCCESS"}
                 }
             }
-        stage('Zuul') {
             steps {
                 dir('ZuulBase/'){
                     sh 'mvn clean package'
@@ -110,13 +113,14 @@ pipeline {
                 }
             }
         }
-        when{
+        
+        stage('Eureka') {
+            when{
                 anyOf{
                     changeset "*EurekaBase/**"
                     expression {currentBuild.previousBuild.result != "SUCCESS"}
                 }
             }
-        stage('Eureka') {
             steps {
                 dir('EurekaBase/'){
                     sh 'mvn clean package'
@@ -129,13 +133,14 @@ pipeline {
                 }
             }
         }
-        when{
+        
+        stage('Container Run') {
+            when{
                 anyOf{
                     changeset "*microservicio-service/**"
                     expression {currentBuild.previousBuild.result != "SUCCESS"}
                 }
             }
-        stage('Container Run') {
             steps {
                 sh 'docker stop microservicio-one || true'
                 sh 'docker run -d --rm --name microservicio-one -e SPRING_PROFILES_ACTIVE=qa -p 8090:8090 microservicio-service'
