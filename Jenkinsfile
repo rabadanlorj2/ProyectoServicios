@@ -19,7 +19,8 @@ pipeline {
                 dir('microservicio-service/'){
                     echo 'Execute Maven and Analizing with SonarServer'
                     withSonarQubeEnv('SonarServer') {
-                        sh "mvn clean package sonar:sonar \
+                        /* sh "mvn clean package sonar:sonar \*/
+                        sh "mvn clean package \
                             -Dsonar.projectKey=21_MyCompany_Microservice \
                             -Dsonar.projectName=21_MyCompany_Microservice \
                             -Dsonar.sources=src/main \
@@ -32,13 +33,14 @@ pipeline {
                 }
             }
         }
-        /* */stage('Quality Gate'){
+        
+        /* stage('Quality Gate'){
             steps {
                 timeout(time: 2, unit: 'MINUTES') {
                     waitForQualityGate abortPipeline: false
                 }
             }
-        }
+        }*/
         /*stage('Frontend') {
             steps {
                 echo 'Building Frontend'
