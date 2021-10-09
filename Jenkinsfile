@@ -9,6 +9,12 @@ pipeline {
     }
     stages {
         stage('Build and Analize') {
+            when{
+                anyOf{
+                    changeset "*microservicio-service/**"
+                    expression {currentBuild.previousBuild.result != "SUCCESS"}
+                }
+            }
             steps {
                 dir('microservicio-service/'){
                     echo 'Execute Maven and Analizing with SonarServer'
@@ -45,6 +51,12 @@ pipeline {
                 }
             }
         }*/
+        when{
+                anyOf{
+                    changeset "*liquibase/**"
+                    expression {currentBuild.previousBuild.result != "SUCCESS"}
+                }
+            }
         stage('Database') {
             steps {
                 dir('liquibase/'){
@@ -54,6 +66,12 @@ pipeline {
                 }
             }
         }
+        when{
+                anyOf{
+                    changeset "*microservicio-service/**"
+                    expression {currentBuild.previousBuild.result != "SUCCESS"}
+                }
+            }
         stage('Container Build') {
             steps {
                 dir('microservicio-service/'){
@@ -73,6 +91,12 @@ pipeline {
                 }
             }
         }*/
+        when{
+                anyOf{
+                    changeset "*ZuulBase/**"
+                    expression {currentBuild.previousBuild.result != "SUCCESS"}
+                }
+            }
         stage('Zuul') {
             steps {
                 dir('ZuulBase/'){
@@ -86,6 +110,12 @@ pipeline {
                 }
             }
         }
+        when{
+                anyOf{
+                    changeset "*EurekaBase/**"
+                    expression {currentBuild.previousBuild.result != "SUCCESS"}
+                }
+            }
         stage('Eureka') {
             steps {
                 dir('EurekaBase/'){
@@ -99,6 +129,12 @@ pipeline {
                 }
             }
         }
+        when{
+                anyOf{
+                    changeset "*microservicio-service/**"
+                    expression {currentBuild.previousBuild.result != "SUCCESS"}
+                }
+            }
         stage('Container Run') {
             steps {
                 sh 'docker stop microservicio-one || true'
