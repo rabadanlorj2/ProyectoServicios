@@ -81,7 +81,7 @@ pipeline {
                         sh 'docker login -u $USERNAME -p $PASSWORD'
                         sh 'docker build -t zuul .'
                         sh 'docker stop zuul-service || true'
-                        sh 'docker run -d --rm --name zuul-service -p 8000:8000 zuul'
+                        sh 'docker run -d --rm --name zuul-service -p 8085:8085 zuul'
                     }
                 }
             }
